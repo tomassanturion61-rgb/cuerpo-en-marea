@@ -4,9 +4,7 @@ import { supabase } from '../lib/supabase'
 
 export default function Alumnas() {
   const [alumnas, setAlumnas] = useState([])
-  const [inactivas, setInactivas] = useState([])
   const [busqueda, setBusqueda] = useState('')
-  const [showInactivas, setShowInactivas] = useState(false)
   const [loading, setLoading] = useState(true)
   const navigate = useNavigate()
 
@@ -25,15 +23,10 @@ export default function Alumnas() {
         ),
         pagos ( monto, periodo_mes, periodo_anio )
       `)
+      .eq('activa', true)
       .order('nombre')
-    setAlumnas((data || []).filter(a => a.activa))
-    setInactivas((data || []).filter(a => !a.activa))
+    setAlumnas(data || [])
     setLoading(false)
-  }
-
-  async function reactivar(alumna) {
-    await supabase.from('alumnas').update({ activa: true }).eq('id', alumna.id)
-    fetchAlumnas()
   }
 
   const hoy = new Date()
@@ -115,44 +108,6 @@ export default function Alumnas() {
         </ul>
       )}
 
-      {/* Alumnas inactivas */}
-      {inactivas.length > 0 && (
-        <div className="mt-4">
-          <button
-            onClick={() => setShowInactivas(v => !v)}
-            className="flex items-center gap-2 text-texto-muted text-sm font-medium w-full py-2"
-          >
-            <svg className={`w-4 h-4 transition-transform ${showInactivas ? 'rotate-90' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-            Dadas de baja ({inactivas.length})
-          </button>
-
-          {showInactivas && (
-            <ul className="flex flex-col gap-2 mt-2">
-              {inactivas.map(alumna => (
-                <li key={alumna.id} className="flex items-center gap-3 bg-white/60 rounded-2xl p-3 border border-gray-200">
-                  <button
-                    onClick={() => navigate(`/alumnas/${alumna.id}`)}
-                    className="flex-1 flex items-center gap-3 text-left"
-                  >
-                    <div className="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
-                      <span className="font-display text-gray-400 font-bold">{alumna.nombre.charAt(0).toUpperCase()}</span>
-                    </div>
-                    <p className="font-medium text-texto-muted text-sm truncate">{alumna.nombre}</p>
-                  </button>
-                  <button
-                    onClick={() => reactivar(alumna)}
-                    className="text-xs font-semibold bg-emerald-100 text-emerald-700 px-3 py-1.5 rounded-full flex-shrink-0 active:scale-95 transition-transform"
-                  >
-                    Reactivar
-                  </button>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      )}
     </div>
   )
 }

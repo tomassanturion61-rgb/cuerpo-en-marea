@@ -1,16 +1,19 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 
 const COLORES = ['#3d5afe', '#e91e8c', '#9c27b0', '#00bcd4', '#4caf50', '#ff9800', '#f44336', '#607d8b']
 
 export default function Clases() {
+  const navigate = useNavigate()
   const [clases, setClases] = useState([])
   const [nombre, setNombre] = useState('')
   const [color, setColor] = useState(COLORES[0])
   const [loading, setLoading] = useState(true)
   const [guardando, setGuardando] = useState(false)
+  const [inactivas, setInactivas] = useState([])
 
-  useEffect(() => { fetchClases() }, [])
+  useEffect(() => { fetchClases(); fetchInactivas() }, [])
 
   async function fetchClases() {
     setLoading(true)
@@ -39,6 +42,22 @@ export default function Clases() {
     if (!confirm('¿Eliminar este tipo de clase? Si tiene alumnas inscriptas, se desactivará primero.')) return
     await supabase.from('tipos_clase').delete().eq('id', id)
     fetchClases()
+  }
+
+  async function fetchInactivas() {
+    const { data } = await supabase.from('alumnas').select('id, nombre').eq('activa', false).order('nombre')
+    setInactivas(data || [])
+  }
+
+  async function reactivarAlumna(id) {
+    await supabase.from('alumnas').update({ activa: true }).eq('id', id)
+    fetchInactivas()
+  }
+
+  async function eliminarAlumna(alumna) {
+    if (!confirm(`¿Eliminar a ${alumna.nombre} permanentemente?\n\nSe borrarán TODOS sus datos: pagos, asistencias e inscripciones. Esta acción no se puede deshacer.`)) return
+    await supabase.from('alumnas').delete().eq('id', alumna.id)
+    fetchInactivas()
   }
 
   return (
@@ -115,6 +134,43 @@ export default function Clases() {
       )}
 
       <p className="text-xs text-texto-muted text-center">Las clases inactivas no aparecen en el pase de lista ni en inscripciones.</p>
+
+      {/* Alumnas dadas de baja */}
+      {inactivas.length > 0 && (
+        <div className="bg-white rounded-2xl shadow-card overflow-hidden">
+          <div className="px-4 py-3 border-b border-gray-100">
+            <h3 className="font-display font-semibold text-texto">Dadas de baja ({inactivas.length})</h3>
+            <p className="text-xs text-texto-muted mt-0.5">Reactivá o eliminá permanentemente</p>
+          </div>
+          <ul>
+            {inactivas.map((a, i) => (
+              <li key={a.id} className={`flex items-center gap-3 px-4 py-3 ${i < inactivas.length - 1 ? 'border-b border-gray-50' : ''}`}>
+                <button
+                  onClick={() => navigate(`/alumnas/${a.id}`)}
+                  className="flex-1 text-left text-sm font-medium text-texto-muted truncate"
+                >
+                  {a.nombre}
+                </button>
+                <button
+                  onClick={() => reactivarAlumna(a.id)}
+                  className="text-xs font-semibold bg-emerald-100 text-emerald-700 px-3 py-1.5 rounded-full flex-shrink-0 active:scale-95 transition-transform"
+                >
+                  Reactivar
+                </button>
+                <button
+                  onClick={() => eliminarAlumna(a)}
+                  className="text-gray-300 hover:text-red-400 active:text-red-500 transition-colors p-1 flex-shrink-0"
+                  title="Eliminar permanentemente"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   )
 }
