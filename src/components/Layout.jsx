@@ -34,7 +34,7 @@ export default function Layout() {
               </svg>
             </button>
           ) : (
-            <span className="text-azul-light text-xl">✦</span>
+            <img src="/logo.jpeg" alt="CM" className="w-8 h-8 rounded-full border border-white/20 object-cover" />
           )}
           <h1 className="font-display text-lg font-semibold flex-1">{title()}</h1>
           {location.pathname === '/alumnas' && (

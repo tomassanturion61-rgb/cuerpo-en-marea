@@ -7,7 +7,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg', 'icons/*.png'],
+      includeAssets: ['logo.jpeg', 'apple-touch-icon.png', 'icons/*.png'],
       manifest: {
         name: 'Cuerpo en Marea',
         short_name: 'CEM',
@@ -20,7 +20,7 @@ export default defineConfig({
         scope: '/',
         lang: 'es',
         icons: [
-          { src: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
+          { src: '/icons/icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
           { src: '/icons/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any maskable' },
         ],
       },

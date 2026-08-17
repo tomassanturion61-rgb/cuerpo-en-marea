@@ -28,9 +28,11 @@ export default function Login() {
   return (
     <div className="min-h-screen bg-marino flex flex-col items-center justify-center px-6">
       <div className="mb-10 text-center">
-        <div className="w-16 h-16 bg-azul/20 border border-azul/30 rounded-full flex items-center justify-center mx-auto mb-4">
-          <span className="text-azul-light text-3xl">✦</span>
-        </div>
+        <img
+          src="/logo.jpeg"
+          alt="Cuerpo en Marea"
+          className="w-24 h-24 rounded-full mx-auto mb-4 shadow-lg border-2 border-white/10"
+        />
         <h1 className="font-display text-3xl text-white font-bold">Cuerpo en Marea</h1>
         <p className="text-white/45 text-sm mt-1 tracking-wide uppercase font-medium">Gestión de clases</p>
       </div>
