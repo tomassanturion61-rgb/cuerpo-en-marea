@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html { -webkit-tap-highlight-color: transparent; }
+  body { @apply bg-crema text-texto font-sans antialiased; }
+  h1, h2, h3, h4, h5 { @apply font-display; }
+}
+
+@layer utilities {
+  .safe-bottom { padding-bottom: env(safe-area-inset-bottom, 0px); }
+  .pb-nav { padding-bottom: calc(4rem + env(safe-area-inset-bottom, 0px)); }
+}
+
+/* Scrollbar discreta */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(61,90,254,.25); border-radius: 4px; }
