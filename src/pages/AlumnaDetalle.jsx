@@ -74,6 +74,12 @@ export default function AlumnaDetalle() {
     fetchData()
   }
 
+  async function cambiarFrecuencia(n) {
+    const nuevo = alumna.frecuencia_semanal === n ? null : n
+    await supabase.from('alumnas').update({ frecuencia_semanal: nuevo }).eq('id', id)
+    fetchData()
+  }
+
   if (loading) return (
     <div className="flex items-center justify-center h-48">
       <div className="w-8 h-8 border-2 border-azul border-t-transparent rounded-full animate-spin" />
@@ -102,6 +108,9 @@ export default function AlumnaDetalle() {
               )}
             </div>
             {alumna.contacto && <p className="text-white/55 text-sm mt-0.5">{alumna.contacto}</p>}
+            {alumna.frecuencia_semanal && (
+              <p className="text-white/45 text-xs mt-0.5">{alumna.frecuencia_semanal}x por semana</p>
+            )}
           </div>
         </div>
 
@@ -148,6 +157,26 @@ export default function AlumnaDetalle() {
             {pctAsistencia !== null ? `${pctAsistencia}%` : '—'}
           </p>
           <p className="text-xs text-texto-muted mt-0.5">Asistencia</p>
+        </div>
+      </div>
+
+      {/* Frecuencia semanal */}
+      <div className="bg-white rounded-2xl shadow-card p-4">
+        <p className="text-xs uppercase tracking-widest font-semibold text-texto-muted mb-3">Veces por semana</p>
+        <div className="flex gap-2">
+          {[1, 2, 3, 4, 5].map(n => (
+            <button
+              key={n}
+              onClick={() => cambiarFrecuencia(n)}
+              className={`flex-1 py-2.5 rounded-xl text-sm font-bold transition-all active:scale-95 ${
+                alumna.frecuencia_semanal === n
+                  ? 'bg-azul text-white shadow-glow'
+                  : 'bg-gray-50 border border-gray-200 text-texto-muted'
+              }`}
+            >
+              {n}x
+            </button>
+          ))}
         </div>
       </div>
 

@@ -6,6 +6,7 @@ export default function NuevaAlumna() {
   const [nombre, setNombre] = useState('')
   const [contacto, setContacto] = useState('')
   const [clasesSeleccionadas, setClasesSeleccionadas] = useState([])
+  const [frecuencia, setFrecuencia] = useState(null)
   const [monto, setMonto] = useState('')
   const [fecha, setFecha] = useState(new Date().toISOString().split('T')[0])
   const [tiposClase, setTiposClase] = useState([])
@@ -33,7 +34,7 @@ export default function NuevaAlumna() {
     // Crear alumna
     const { data: alumna, error: errAlumna } = await supabase
       .from('alumnas')
-      .insert({ nombre: nombre.trim(), contacto: contacto.trim() })
+      .insert({ nombre: nombre.trim(), contacto: contacto.trim(), frecuencia_semanal: frecuencia })
       .select()
       .single()
 
@@ -89,6 +90,27 @@ export default function NuevaAlumna() {
             placeholder="11 1234-5678"
             className="input"
           />
+        </div>
+
+        {/* Frecuencia semanal */}
+        <div>
+          <label className="label">Veces por semana (opcional)</label>
+          <div className="flex gap-2 mt-2">
+            {[1, 2, 3, 4, 5].map(n => (
+              <button
+                key={n}
+                type="button"
+                onClick={() => setFrecuencia(frecuencia === n ? null : n)}
+                className={`flex-1 py-3 rounded-2xl text-sm font-bold transition-all active:scale-95 ${
+                  frecuencia === n
+                    ? 'bg-azul text-white shadow-glow'
+                    : 'bg-white border border-azul/20 text-texto-muted'
+                }`}
+              >
+                {n}x
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Clases */}
