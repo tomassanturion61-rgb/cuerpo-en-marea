@@ -12,7 +12,7 @@ export default function Login() {
     e.preventDefault()
     if (password === PASSWORD) {
       localStorage.setItem('cem_auth', '1')
-      navigate('/alumnas', { replace: true })
+      navigate('/', { replace: true })
     } else {
       setError('Contraseña incorrecta')
     }
