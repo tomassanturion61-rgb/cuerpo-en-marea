@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 
+const pesos = n => Math.round(n).toLocaleString('es-AR')
+
 function MesAnio(mes, anio) {
   return new Date(anio, mes - 1).toLocaleDateString('es-AR', { month: 'long', year: 'numeric' })
 }
@@ -140,7 +142,7 @@ export default function AlumnaDetalle() {
           <p className="text-xs text-texto-muted mt-0.5">Pagos</p>
         </div>
         <div className="bg-white rounded-2xl p-3 shadow-card text-center">
-          <p className="font-display text-2xl font-bold text-azul">${totalPagado.toFixed(0)}</p>
+          <p className="font-display text-2xl font-bold text-azul">${pesos(totalPagado)}</p>
           <p className="text-xs text-texto-muted mt-0.5">Total</p>
         </div>
         <div className="bg-white rounded-2xl p-3 shadow-card text-center">
@@ -170,7 +172,7 @@ export default function AlumnaDetalle() {
                   <p className="text-xs text-texto-muted">{new Date(p.fecha + 'T12:00:00').toLocaleDateString('es-AR')}</p>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="font-semibold text-emerald-600">${parseFloat(p.monto).toFixed(0)}</span>
+                  <span className="font-semibold text-emerald-600">${pesos(p.monto)}</span>
                   <button onClick={() => eliminarPago(p.id)} className="text-gray-300 hover:text-red-400 active:text-red-500 transition-colors p-1">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />

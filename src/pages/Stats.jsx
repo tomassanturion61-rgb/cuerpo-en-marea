@@ -4,6 +4,8 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 
 
 const MESES_CORTO = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic']
 
+const pesos = n => Math.round(n).toLocaleString('es-AR')
+
 export default function Stats() {
   const hoy = new Date()
   const mesActual = hoy.getMonth() + 1
@@ -85,7 +87,7 @@ export default function Stats() {
           {MESES_CORTO[mesActual - 1]} {new Date().getFullYear()}
         </p>
         <p className="font-display text-4xl font-bold mb-4">
-          ${recaudadoEste.toFixed(0)}
+          ${pesos(recaudadoEste)}
           <span className="text-white/40 text-lg font-normal ml-2">recaudado</span>
         </p>
         <div className="grid grid-cols-3 gap-3">
@@ -111,7 +113,7 @@ export default function Stats() {
             <YAxis hide />
             <Tooltip
               contentStyle={{ borderRadius: 12, border: 'none', boxShadow: '0 4px 20px rgba(0,0,0,.12)', fontSize: 13 }}
-              formatter={v => [`$${v.toFixed(0)}`, 'Total']}
+              formatter={v => [`$${pesos(v)}`, 'Total']}
             />
             <Bar dataKey="total" radius={[6, 6, 0, 0]}>
               {grafico.map((entry, i) => (

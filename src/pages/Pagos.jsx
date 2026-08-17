@@ -4,6 +4,8 @@ import { supabase } from '../lib/supabase'
 
 const MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre']
 
+const pesos = n => Math.round(n).toLocaleString('es-AR')
+
 export default function Pagos() {
   const hoy = new Date()
   const [mes, setMes] = useState(hoy.getMonth() + 1)
@@ -94,7 +96,7 @@ export default function Pagos() {
       {/* Resumen */}
       <div className="grid grid-cols-3 gap-3">
         <div className="bg-white rounded-2xl p-3 shadow-card text-center">
-          <p className="font-display text-2xl font-bold text-azul">${totalRecaudado.toFixed(0)}</p>
+          <p className="font-display text-2xl font-bold text-azul">${pesos(totalRecaudado)}</p>
           <p className="text-xs text-texto-muted mt-0.5">Recaudado</p>
         </div>
         <div className="bg-white rounded-2xl p-3 shadow-card text-center">
@@ -154,7 +156,7 @@ export default function Pagos() {
                         {a.nombre}
                       </button>
                       <div className="flex items-center gap-2">
-                        <span className="font-semibold text-emerald-600 text-sm">${parseFloat(p.monto).toFixed(0)}</span>
+                        <span className="font-semibold text-emerald-600 text-sm">${pesos(p.monto)}</span>
                         <button onClick={() => eliminarPago(p.id)} className="text-gray-300 hover:text-red-400 transition-colors p-1">
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
