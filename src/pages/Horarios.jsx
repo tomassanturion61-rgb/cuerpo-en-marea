@@ -43,14 +43,22 @@ export default function Horarios() {
   }
 
   async function handleCreate() {
-    if (!formTipo || formDias.length === 0 || !formInicio || !formFin) return
+    if (!formTipo || formDias.length === 0 || !formInicio || !formFin) {
+      alert('Completá todos los campos: tipo de clase, al menos un día, y los horarios.')
+      return
+    }
     setCreating(true)
-    await supabase.from('horarios').insert({
+    const { error } = await supabase.from('horarios').insert({
       tipo_clase_id: formTipo,
       dias: formDias,
       hora_inicio: formInicio,
       hora_fin: formFin,
     })
+    if (error) {
+      alert('Error al guardar: ' + error.message)
+      setCreating(false)
+      return
+    }
     setCreating(false)
     setShowCreate(false)
     setFormDias([])

@@ -44,15 +44,25 @@ export default function MisClases() {
   async function handleCreate() {
     if (formAlumnas.length === 0) return
     setCreating(true)
-    const { data: nueva } = await supabase
+    const { data: nueva, error: errInsert } = await supabase
       .from('clases_planificadas')
       .insert({ tipo_clase_id: formTipo || null, notas: '' })
       .select()
       .single()
+    if (errInsert) {
+      alert('Error al guardar: ' + errInsert.message)
+      setCreating(false)
+      return
+    }
     if (nueva && formAlumnas.length > 0) {
-      await supabase.from('clase_alumnas').insert(
+      const { error: errAlumnas } = await supabase.from('clase_alumnas').insert(
         formAlumnas.map(aid => ({ clase_planificada_id: nueva.id, alumna_id: aid }))
       )
+      if (errAlumnas) {
+        alert('Error al guardar alumnas: ' + errAlumnas.message)
+        setCreating(false)
+        return
+      }
     }
     setCreating(false)
     setShowCreate(false)
