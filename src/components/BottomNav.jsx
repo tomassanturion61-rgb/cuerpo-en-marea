@@ -41,7 +41,7 @@ const tabs = [
 
 export default function BottomNav() {
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-marino safe-bottom border-t border-white/10">
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-marino safe-bottom border-t border-white/10">
       <div className="max-w-lg mx-auto flex items-stretch">
         {tabs.map(({ to, label, icon }) => (
           <NavLink
