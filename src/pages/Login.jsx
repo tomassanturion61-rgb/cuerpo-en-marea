@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../hooks/useAuth'
 
-const APP_EMAIL = 'admin@cuerpoenmarea.com'
+const APP_EMAIL = 'ayelenpetrola95@gmail.com'
 
 export default function Login() {
   const [password, setPassword] = useState('')
