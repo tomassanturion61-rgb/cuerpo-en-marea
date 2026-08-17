@@ -30,12 +30,10 @@ export default function NuevaAlumna() {
     setLoading(true)
     setError('')
 
-    const { data: { user } } = await supabase.auth.getUser()
-
     // Crear alumna
     const { data: alumna, error: errAlumna } = await supabase
       .from('alumnas')
-      .insert({ user_id: user.id, nombre: nombre.trim(), contacto: contacto.trim() })
+      .insert({ nombre: nombre.trim(), contacto: contacto.trim() })
       .select()
       .single()
 
@@ -44,7 +42,7 @@ export default function NuevaAlumna() {
     // Crear inscripciones
     if (clasesSeleccionadas.length > 0) {
       await supabase.from('inscripciones').insert(
-        clasesSeleccionadas.map(tcId => ({ user_id: user.id, alumna_id: alumna.id, tipo_clase_id: tcId }))
+        clasesSeleccionadas.map(tcId => ({ alumna_id: alumna.id, tipo_clase_id: tcId }))
       )
     }
 
@@ -52,7 +50,6 @@ export default function NuevaAlumna() {
     if (monto && parseFloat(monto) > 0) {
       const hoy = new Date(fecha)
       await supabase.from('pagos').insert({
-        user_id: user.id,
         alumna_id: alumna.id,
         monto: parseFloat(monto),
         fecha,

@@ -45,9 +45,7 @@ export default function AlumnaDetalle() {
 
   async function registrarPago() {
     if (!monto || parseFloat(monto) <= 0) return
-    const { data: { user } } = await supabase.auth.getUser()
     await supabase.from('pagos').insert({
-      user_id: user.id,
       alumna_id: id,
       monto: parseFloat(monto),
       fecha: hoy.toISOString().split('T')[0],

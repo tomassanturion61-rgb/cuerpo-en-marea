@@ -71,10 +71,8 @@ export default function PaseLista() {
 
   async function guardar() {
     setGuardando(true)
-    const { data: { user } } = await supabase.auth.getUser()
 
     const rows = alumnas.map(a => ({
-      user_id: user.id,
       alumna_id: a.id,
       tipo_clase_id: claseId,
       fecha_clase: fecha,

@@ -1,28 +1,21 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { supabase } from '../lib/supabase'
-import { useAuth } from '../hooks/useAuth'
 
-const APP_EMAIL = 'ayelenpetrola95@gmail.com'
+const PASSWORD = '1133573805'
 
 export default function Login() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false)
-  const { session } = useAuth()
   const navigate = useNavigate()
 
-  useEffect(() => {
-    if (session) navigate('/alumnas', { replace: true })
-  }, [session, navigate])
-
-  async function handleSubmit(e) {
+  function handleSubmit(e) {
     e.preventDefault()
-    setLoading(true)
-    setError('')
-    const { error } = await supabase.auth.signInWithPassword({ email: APP_EMAIL, password })
-    setLoading(false)
-    if (error) setError('Contraseña incorrecta')
+    if (password === PASSWORD) {
+      localStorage.setItem('cem_auth', '1')
+      navigate('/alumnas', { replace: true })
+    } else {
+      setError('Contraseña incorrecta')
+    }
   }
 
   return (
@@ -47,7 +40,7 @@ export default function Login() {
             <input
               type="password"
               value={password}
-              onChange={e => setPassword(e.target.value)}
+              onChange={e => { setPassword(e.target.value); setError('') }}
               placeholder="••••••••"
               required
               autoFocus
@@ -57,10 +50,9 @@ export default function Login() {
           {error && <p className="text-red-400 text-sm">{error}</p>}
           <button
             type="submit"
-            disabled={loading}
-            className="bg-azul text-white font-semibold py-3 rounded-2xl active:scale-95 transition-transform shadow-glow disabled:opacity-60"
+            className="bg-azul text-white font-semibold py-3 rounded-2xl active:scale-95 transition-transform shadow-glow"
           >
-            {loading ? 'Entrando...' : 'Entrar →'}
+            Entrar →
           </button>
         </form>
       </div>

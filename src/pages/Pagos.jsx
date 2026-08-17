@@ -36,14 +36,12 @@ export default function Pagos() {
 
   async function registrarPago(alumna) {
     if (!monto || parseFloat(monto) <= 0) return
-    const { data: { user } } = await supabase.auth.getUser()
     const existing = pagoDe(alumna.id)
 
     if (existing) {
       await supabase.from('pagos').update({ monto: parseFloat(monto), fecha: hoy.toISOString().split('T')[0] }).eq('id', existing.id)
     } else {
       await supabase.from('pagos').insert({
-        user_id: user.id,
         alumna_id: alumna.id,
         monto: parseFloat(monto),
         fecha: hoy.toISOString().split('T')[0],

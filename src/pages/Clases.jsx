@@ -26,8 +26,7 @@ export default function Clases() {
     e.preventDefault()
     if (!nombre.trim()) return
     setGuardando(true)
-    const { data: { user } } = await supabase.auth.getUser()
-    await supabase.from('tipos_clase').insert({ user_id: user.id, nombre: nombre.trim(), color })
+    await supabase.from('tipos_clase').insert({ nombre: nombre.trim(), color })
     setNombre('')
     setGuardando(false)
     fetchClases()
