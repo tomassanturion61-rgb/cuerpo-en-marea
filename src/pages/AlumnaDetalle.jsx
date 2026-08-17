@@ -57,10 +57,21 @@ export default function AlumnaDetalle() {
     fetchData()
   }
 
+  async function eliminarPago(pagoId) {
+    if (!confirm('¿Eliminar este pago?')) return
+    await supabase.from('pagos').delete().eq('id', pagoId)
+    fetchData()
+  }
+
   async function darDeBaja() {
-    if (!confirm(`¿Dar de baja a ${alumna.nombre}?`)) return
+    if (!confirm(`¿Dar de baja a ${alumna.nombre}?\n\nSu historial de pagos y asistencia se conserva. Podés reactivarla cuando quieras.`)) return
     await supabase.from('alumnas').update({ activa: false }).eq('id', id)
-    navigate('/alumnas', { replace: true })
+    fetchData()
+  }
+
+  async function reactivar() {
+    await supabase.from('alumnas').update({ activa: true }).eq('id', id)
+    fetchData()
   }
 
   if (loading) return (
@@ -80,11 +91,16 @@ export default function AlumnaDetalle() {
       {/* Card principal */}
       <div className="bg-marino rounded-3xl p-6 text-white">
         <div className="flex items-center gap-4 mb-4">
-          <div className="w-14 h-14 rounded-full bg-azul/30 flex items-center justify-center">
+          <div className="w-14 h-14 rounded-full bg-azul/30 flex items-center justify-center flex-shrink-0">
             <span className="font-display text-3xl font-bold text-azul-light">{alumna.nombre.charAt(0)}</span>
           </div>
-          <div>
-            <h2 className="font-display text-xl font-bold">{alumna.nombre}</h2>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <h2 className="font-display text-xl font-bold">{alumna.nombre}</h2>
+              {!alumna.activa && (
+                <span className="text-xs font-semibold bg-white/15 text-white/70 px-2 py-0.5 rounded-full">Inactiva</span>
+              )}
+            </div>
             {alumna.contacto && <p className="text-white/55 text-sm mt-0.5">{alumna.contacto}</p>}
           </div>
         </div>
@@ -153,7 +169,14 @@ export default function AlumnaDetalle() {
                   <p className="text-sm font-medium text-texto capitalize">{MesAnio(p.periodo_mes, p.periodo_anio)}</p>
                   <p className="text-xs text-texto-muted">{new Date(p.fecha + 'T12:00:00').toLocaleDateString('es-AR')}</p>
                 </div>
-                <span className="font-semibold text-emerald-600">${parseFloat(p.monto).toFixed(0)}</span>
+                <div className="flex items-center gap-3">
+                  <span className="font-semibold text-emerald-600">${parseFloat(p.monto).toFixed(0)}</span>
+                  <button onClick={() => eliminarPago(p.id)} className="text-gray-300 hover:text-red-400 active:text-red-500 transition-colors p-1">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                  </button>
+                </div>
               </li>
             ))}
           </ul>
@@ -184,13 +207,22 @@ export default function AlumnaDetalle() {
         )}
       </div>
 
-      {/* Dar de baja */}
-      <button
-        onClick={darDeBaja}
-        className="text-red-400 text-sm font-medium text-center py-3"
-      >
-        Dar de baja a esta alumna
-      </button>
+      {/* Dar de baja / Reactivar */}
+      {alumna.activa ? (
+        <button
+          onClick={darDeBaja}
+          className="text-red-400 text-sm font-medium text-center py-3"
+        >
+          Dar de baja (no borra el historial)
+        </button>
+      ) : (
+        <button
+          onClick={reactivar}
+          className="bg-emerald-500 text-white font-semibold py-4 rounded-2xl active:scale-95 transition-transform shadow-sm"
+        >
+          ✓ Reactivar alumna
+        </button>
+      )}
 
       {/* Modal pago */}
       {showPagoModal && (
