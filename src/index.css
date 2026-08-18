@@ -6,6 +6,10 @@
   html { -webkit-tap-highlight-color: transparent; }
   body { @apply bg-crema text-texto font-sans antialiased; }
   h1, h2, h3, h4, h5 { @apply font-display; }
+  /* iOS: inputs < 16px triggean auto-zoom al hacer focus */
+  @media (max-width: 768px) {
+    input, textarea, select { font-size: 16px !important; }
+  }
 }
 
 @layer utilities {
